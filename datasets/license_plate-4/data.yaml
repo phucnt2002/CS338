@@ -1,0 +1,13 @@
+names:
+- bien_so
+nc: 1
+train: /content/drive/MyDrive/CV++/datasets/license_plate-4/train/images
+val: /content/drive/MyDrive/CV++/datasets/license_plate-4/valid/images
+
+test: /content/drive/MyDrive/CV++/datasets/license_plate-4/test/images
+test: /content/drive/MyDrive/CV++/datasets/license_plate-4/test/images
+test: /content/drive/MyDrive/CV++/datasets/license_plate-4/test/images
+test: /content/drive/MyDrive/CV++/datasets/license_plate-4/test/images
+test: /content/drive/MyDrive/CV++/datasets/license_plate-4/test/images
+test: /content/drive/MyDrive/CV++/datasets/license_plate-4/test/images
+test: /content/drive/MyDrive/CV++/datasets/license_plate-4/test/images
