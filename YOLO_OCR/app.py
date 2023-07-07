@@ -14,7 +14,7 @@ app = Flask(__name__)
 
 
 model = torch.hub.load(
-    "ultralytics/yolov5", "custom", path="model/last.pt", force_reload=True
+    "ultralytics/yolov5", "custom", path="model/best.pt", force_reload=True
 )
 
 model.eval()
@@ -72,9 +72,10 @@ def predict():
         img = Image.open(io.BytesIO(img_bytes))
         results = model(img, size=640)
         results.render()
-        for img in results.imgs:
-            img_base64 = Image.fromarray(img)
-            img_base64.save("static/image0.jpg", format="JPEG")
+        print(results)
+        img = results.render()[0]
+        img_base64 = Image.fromarray(img)
+        img_base64.save("static/image0.jpg", format="JPEG")
         return redirect("static/image0.jpg")
     return render_template("index.html")
 

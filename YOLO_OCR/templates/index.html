@@ -19,7 +19,7 @@
     </style>
     <link rel="stylesheet" href="/static/style.css">
 
-    <title>Meftun AKARSU</title>
+    <title>Number Plate Recognition YOLO OCR</title>
   </head>
   <body class="text-center">
     
@@ -43,31 +43,11 @@
           }
 
           let ext = $('#inputfile').val().split('.').pop().toLowerCase();
-          if($.inArray(ext, ['jpg','jpeg']) == -1) {
+          if($.inArray(ext, ['jpg','jpeg', 'png']) == -1) {
             $("#inputfile").val(null);
             alert('only jpeg/jpg files are allowed!');
           }
       });
     </script>
   </body>
-</html>
-
-<!DOCTYPE html>
-<html>
-
-
-  <body>
-    <h1>Meftun AKARSU</h1>
-    <div>
-      
-
-        <img src="{{ url_for('video') }}" width="80%" />
-
-
-        
-    </div>
-            
-    </body>
-
-
 </html>
