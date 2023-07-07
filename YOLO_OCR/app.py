@@ -5,21 +5,28 @@ from PIL import Image
 import cv2
 import numpy as np
 from torchvision.models import detection
+from ai.ai_model import load_yolov5_model
+from helper.general_utils import filter_text
 
 import torch
 from torchvision import models
 from flask import Flask, render_template, request, redirect, Response
+from ai.ocr_model import easyocr_model_load
+from ai.ai_model import detection
+from helper.params import Parameters
+params = Parameters()
+
 
 app = Flask(__name__)
 
 
-model = torch.hub.load(
-    "ultralytics/yolov5", "custom", path="model/best.pt", force_reload=True
-)
+# model = torch.hub.load(
+#     "ultralytics/yolov5", "custom", path="model/best.pt", force_reload=True
+# )
 
-model.eval()
-model.conf = 0.5
-model.iou = 0.45
+# model.eval()
+# model.conf = 0.5
+# model.iou = 0.45
 
 from io import BytesIO
 
@@ -57,11 +64,14 @@ def video():
 
 @app.route("/", methods=["GET", "POST"])
 def predict():
+    model, labels = load_yolov5_model()
+    
     """
     The function takes in an image, runs it through the model, and then saves the output image to a
     static folder
     :return: The image is being returned.
     """
+    text
     if request.method == "POST":
         if "file" not in request.files:
             return redirect(request.url)
@@ -69,15 +79,27 @@ def predict():
         if not file:
             return
         img_bytes = file.read()
-        img = Image.open(io.BytesIO(img_bytes))
-        results = model(img, size=640)
-        results.render()
-        print(results)
-        img = results.render()[0]
-        img_base64 = Image.fromarray(img)
-        img_base64.save("static/image0.jpg", format="JPEG")
-        return redirect("static/image0.jpg")
-    return render_template("index.html")
+        img = cv2.imread("./test/"+file.filename)
+        if img is None:
+            print("Failed to read the image:", file.filename)
+            return
+        print(file)
+        # img = Image.open(io.BytesIO(img_bytes))
+        text_reader = easyocr_model_load()
+        # Detecting the text from the image.
+        detected, _ = detection(img, model, labels)
+        # Reading the text from the image.
+        resulteasyocr = text_reader.readtext(
+            detected
+        ) 
+        
+        print(text_reader)
+        text = filter_text(params.rect_size, resulteasyocr, params.region_threshold)
+        print(text)
+        cv2.imwrite("./static/detected_image.jpg", detected)
+        
+    return render_template("index.html", image_file="detected_image.jpg", text=text)
+
 
 
 if __name__ == "__main__":

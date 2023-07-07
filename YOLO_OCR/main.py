@@ -25,7 +25,7 @@ if __name__ == "__main__":
     # Capturing the video from the webcam.
     camera = cv2.VideoCapture(0)
     
-    image_path = "./test/2.jpg"  # Thay YOUR_IMAGE_PATH bằng đường dẫn đến tệp tin ảnh của bạn
+    image_path = "./test/8.png"  # Thay YOUR_IMAGE_PATH bằng đường dẫn đến tệp tin ảnh của bạn
     if os.path.exists(image_path):
         frame = cv2.imread(image_path)
     else:
