@@ -17,7 +17,7 @@ from helper.params import Parameters
 params = Parameters()
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 
 
 # model = torch.hub.load(
@@ -71,7 +71,7 @@ def predict():
     static folder
     :return: The image is being returned.
     """
-    text
+    text = ""
     if request.method == "POST":
         if "file" not in request.files:
             return redirect(request.url)

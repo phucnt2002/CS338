@@ -1,6 +1,6 @@
 <!doctype html>
 
-<html lang="en">
+<html lang="en" >
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -18,32 +18,38 @@
       }
     </style>
     <link rel="stylesheet" href="../static/style.css">
-
     <title>Number Plate Recognition YOLO OCR</title>
   </head>
-  <body class="text-center">
+  <body class="text-center" style="background-image: url('{{ url_for('static', filename='Home.png') }}');">
     
     <form class="form-signin" method=post enctype=multipart/form-data>
-        <h1 class="h3 mb-3 font-weight-normal">Choose image file</h1>
-        <input type="file" name="file" class="form-control-file" id="inputfile">
+        <h1 class="h3 mb-3 font-weight-normal" style="
+        color: white;
+    ">Choose image file😉</h1>
+        <input type="file" name="file" class="form-control-file" id="inputfile" style="
+        color: white;
+    ">
         <br/>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Upload</button>
     </form>
-    {% if image_file %}
-    <div class="mt-4">
-      <h2>Detected Image</h2>
-      <img src="{{ url_for('static', filename=image_file) }}" alt="Detected Image" style="width: 500px; height: auto;">
-    </div>
-    {% endif %}
-
-    {% if text %}
-    <div class="mt-4">
-      <h2>Detected Text</h2>
-      <ul>
-        {% for t in text %}
-          <li>{{ t }}</li>
-        {% endfor %}
-      </ul>
+    <div style="display: flex; flex-direction: row; align-items: center; color: white">
+      {% if image_file %}
+      <div class="mt-4">
+        <h2 style="
+        color: white;">Detected Image</h2>
+        <img src="{{ url_for('static', filename=image_file) }}" alt="Detected Image" style="width: 500px; height: auto;">
+      </div>
+      {% endif %}
+  
+      {% if text %}
+      <div class="mt-4">
+        <h2>Detected Text</h2>
+        <ul>
+          {% for t in text %}
+            <li>{{ t }}</li>
+          {% endfor %}
+        </ul>
+      </div>
     </div>
     {% endif %}
     <script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
