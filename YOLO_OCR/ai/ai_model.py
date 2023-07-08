@@ -17,7 +17,7 @@ def load_yolov5_model():
     It loads the model and returns the model and the names of the classes.
     :return: model, names
     """
-    model_file = os.path.join(os.getcwd(), 'model', 'best.pt')
+    model_file = os.path.join(os.getcwd(), 'model', 'last.pt')
     model = attempt_load(model_file, map_location=params.device)
     print("device", params.device)
     stride = int(model.stride.max())  # model stride
@@ -29,6 +29,8 @@ def load_yolov5_model():
 
 
 def detection(frame, model, names):
+    detected_plate = ""
+    detected_plate_rescaled=""
     """
     It takes an image, runs it through the model, and returns the image with bounding boxes drawn around
     the detected objects
@@ -68,6 +70,7 @@ def detection(frame, model, names):
     pred = non_max_suppression(pred, params.conf_thres, max_det=params.max_det)
 
     label = ""
+    
     # detections per image
     for i, det in enumerate(pred):
 
@@ -120,6 +123,14 @@ def detection(frame, model, names):
                     frame[:, :, y1:y2, x1:x2].squeeze().permute(1, 2, 0).cpu().numpy()
                 )
                 cv2.imshow("Crooped Plate ", detected_plate)
+                # detected_plate_bgr = cv2.cvtColor(detected_plate, cv2.COLOR_RGB2BGR)
+                # Rescale the pixel values to the range 0-255
+                detected_plate_rescaled = (detected_plate * 255).astype(np.uint8)
+
+
+                # Save the image as JPG
+                output_path = "./static/output.jpg"  # Replace with the desired output path
+                cv2.imwrite(output_path, detected_plate_rescaled)
 
                 # rect_size= (detected_plate.shape[0]*detected_plate.shape[1])
                 c = int(cls)  # integer class
@@ -149,17 +160,4 @@ def detection(frame, model, names):
                         thickness=tf,
                         lineType=cv2.LINE_AA,
                     )
-
-    return out, label
-    # fps = 'FPS: {0:.2f}'.format(frame_rate_calc)
-    # label_size, base_line = cv2.getTextSize(fps, cv2.FONT_HERSHEY_SIMPLEX, params.font_scale, params.thickness)
-    # label_ymin = max(params.fps_y, label_size[1] + 10)
-    # cv2.rectangle(out, (params.text_x_align, label_ymin - label_size[1] - 10),
-    #               (params.text_x_align + label_size[0], label_ymin + base_line - 10), (255, 255, 255),
-    #               cv2.FILLED)
-    # cv2.rectangle(out, (params.text_x_align - 2, label_ymin - label_size[1] - 12),
-    #               (params.text_x_align + 2 + label_size[0], label_ymin + base_line - 8), (0, 0, 0))
-    # cv2.putText(out, fps, (params.text_x_align, label_ymin - 7), cv2.FONT_HERSHEY_SIMPLEX, params.font_scale,
-    #             params.color_blue,
-    #             params.thickness,
-    #             cv2.LINE_AA)
+    return out, label, detected_plate_rescaled
