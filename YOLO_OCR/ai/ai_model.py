@@ -17,7 +17,8 @@ def load_yolov5_model():
     It loads the model and returns the model and the names of the classes.
     :return: model, names
     """
-    model_file = os.path.join(os.getcwd(), 'model', 'last.pt')
+    print(os.getcwd())
+    model_file = os.path.join(os.getcwd(), 'model', 'best1.pt')
     model = attempt_load(model_file, map_location=params.device)
     print("device", params.device)
     stride = int(model.stride.max())  # model stride
