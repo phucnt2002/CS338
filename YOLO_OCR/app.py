@@ -17,25 +17,17 @@ from helper.params import Parameters
 params = Parameters()
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 
-
-# model = torch.hub.load(
-#     "ultralytics/yolov5", "custom", path="model/best.pt", force_reload=True
-# )
-
-# model.eval()
-# model.conf = 0.5
-# model.iou = 0.45
 
 from io import BytesIO
 
 
 def gen():
-    """
-    The function takes in a video stream from the webcam, runs it through the model, and returns the
+    """The function takes in a video stream from the webcam, runs it through the model, and returns the
     output of the model as a video stream
     """
+    model, labels = load_yolov5_model()
     cap = cv2.VideoCapture(0)
     while cap.isOpened():
         success, frame = cap.read()
@@ -71,7 +63,7 @@ def predict():
     static folder
     :return: The image is being returned.
     """
-    text
+    text = ""
     if request.method == "POST":
         if "file" not in request.files:
             return redirect(request.url)
@@ -87,20 +79,19 @@ def predict():
         # img = Image.open(io.BytesIO(img_bytes))
         text_reader = easyocr_model_load()
         # Detecting the text from the image.
-        detected, _ = detection(img, model, labels)
+        detected, _, detected_plate = detection(img, model, labels)
         # Reading the text from the image.
         resulteasyocr = text_reader.readtext(
-            detected
+            detected_plate
         ) 
         
-        print(text_reader)
+        print(detected_plate)
+        
         text = filter_text(params.rect_size, resulteasyocr, params.region_threshold)
         print(text)
         cv2.imwrite("./static/detected_image.jpg", detected)
         
     return render_template("index.html", image_file="detected_image.jpg", text=text)
-
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
