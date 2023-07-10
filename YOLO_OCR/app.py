@@ -44,25 +44,13 @@ def gen():
         frame = cv2.imencode(".jpg", img_BGR)[1].tobytes()
         yield (b"--frame\r\n" b"Content-Type: image/jpeg\r\n\r\n" + frame + b"\r\n")
 
-
-@app.route("/video")
-def video():
-    """
-    It returns a response object that contains a generator function that yields a sequence of images
-    :return: A response object with the gen() function as the body.
-    """
-    return Response(gen(), mimetype="multipart/x-mixed-replace; boundary=frame")
-
-
 @app.route("/", methods=["GET", "POST"])
-def predict():
+def index():
+    return render_template("index.html")
+
+@app.route("/image", methods=["GET", "POST"])
+def image():
     model, labels = load_yolov5_model()
-    
-    """
-    The function takes in an image, runs it through the model, and then saves the output image to a
-    static folder
-    :return: The image is being returned.
-    """
     text = ""
     if request.method == "POST":
         if "file" not in request.files:
@@ -94,7 +82,7 @@ def predict():
         
         cv2.imwrite("./static/detected_image.jpg", detected)
         
-    return render_template("index.html", image_file="detected_image.jpg", text=text)
+    return render_template("image.html", image_file="detected_image.jpg", text=text)
 
 def detect_objects(video):
     model, labels = load_yolov5_model()
@@ -120,8 +108,8 @@ def detect_objects(video):
 
     video.release()
 
-@app.route("/videos", methods=["GET", "POST"])
-def index():
+@app.route("/video", methods=["GET", "POST"])
+def video():
     if request.method == "POST":
         # Kiểm tra xem người dùng đã chọn file video hay chưa
         if 'video' not in request.files:

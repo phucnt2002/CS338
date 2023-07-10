@@ -22,14 +22,14 @@
 
 <div class="container-fluid">
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href=" ">Number Plate Recognition</a>
+    <a class="navbar-brand" href="/">Number Plate Recognition</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-          <a class="nav-link" href="image">Image</a>
+          <a class="nav-link active" href="image">Image</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="video">Video</a>
@@ -40,35 +40,40 @@
 </div>
 
 <div class="container">
-  <h1>CS338 - NHẬN DẠNG</h1>
-  <h2>Nhận dạng biển số xe sử dụng Yolo v5 và OCR</h2>
-  <h3>Giảng viên: Đỗ Văn Tiến</h3>
-  <table class="table">
-    <thead>
-      <tr>
-        <th scope="col">Sinh viên thực hiện</th>
-        <th scope="col">Mã số sinh viên</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Nguyễn Thanh Phúc</td>
-        <td>20521769</td>
-      </tr>
-      <tr>
-        <td>Nguyễn Minh Nhật</td>
-        <td>20521708</td>
-      </tr>
-      <tr>
-        <td>Lê Thế Tuấn</td>
-        <td>2052....</td>
-      </tr>
-      <tr>
-        <td>Trần Minh Phúc</td>
-        <td>20521782</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <form class="form-signin" method="post" enctype="multipart/form-data">
+        <h1 class="h3 mb-3 font-weight-normal">Choose image file 😉</h1>
+        <input type="file" name="file" class="form-control-file" id="inputfile">
+        <br/>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Upload</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-md-6">
+      {% if image_file %}
+      <div>
+        <h2>Detected Image</h2>
+        <img src="{{ url_for('static', filename=image_file) }}" alt="Detected Image" style="max-width: 100%;">
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="col-md-6">
+      {% if text %}
+      <div>
+        <h2>Detected Text</h2>
+        <ul>
+          {% for t in text %}
+          <li>{{ t }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+  </div>
 </div>
 
 <script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
