@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 1
+names: ['numplate']
+
+roboflow:
+  workspace: team11
+  project: license-plates-ft9my
+  version: 3
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/team11/license-plates-ft9my/dataset/3
