@@ -123,7 +123,9 @@ def detection(frame, model, names):
                 detected_plate = (
                     frame[:, :, y1:y2, x1:x2].squeeze().permute(1, 2, 0).cpu().numpy()
                 )
-                cv2.imshow("Crooped Plate ", detected_plate)
+                
+                if detected_plate.size > 0: 
+                    cv2.imshow("Crooped Plate ", detected_plate)
                 # detected_plate_bgr = cv2.cvtColor(detected_plate, cv2.COLOR_RGB2BGR)
                 # Rescale the pixel values to the range 0-255
                 detected_plate_rescaled = (detected_plate * 255).astype(np.uint8)

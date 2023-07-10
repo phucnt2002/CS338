@@ -77,21 +77,80 @@ def predict():
             return
         print(file)
         # img = Image.open(io.BytesIO(img_bytes))
+        frame_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         text_reader = easyocr_model_load()
         # Detecting the text from the image.
-        detected, _, detected_plate = detection(img, model, labels)
+        detected, _, detected_plate = detection(frame_rgb, model, labels)
         # Reading the text from the image.
         resulteasyocr = text_reader.readtext(
-            detected_plate
+            detected
         ) 
         
         print(detected_plate)
         
         text = filter_text(params.rect_size, resulteasyocr, params.region_threshold)
-        print(text)
+        # cv2.imshow("detected", detected)
+        # cv2.imshow("detected_plate", detected_plate)
+        
         cv2.imwrite("./static/detected_image.jpg", detected)
         
     return render_template("index.html", image_file="detected_image.jpg", text=text)
+
+def detect_objects(video):
+    model, labels = load_yolov5_model()
+
+    while video.isOpened():
+        ret, frame = video.read()
+
+        if ret:
+            # Thực hiện phát hiện đối tượng trên frame
+            detected_frame, label, detected_plate = detection(frame, model, labels)
+
+            # Hiển thị frame với các bounding box và nhãn
+            cv2.imshow("Object Detection", detected_frame)
+
+            # Chuyển đổi frame thành dạng byte để trả về
+            frame_bytes = cv2.imencode('.jpg', detected_frame)[1].tobytes()
+
+            # Trả về frame dưới dạng video stream
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+        else:
+            break
+
+    video.release()
+
+@app.route("/videos", methods=["GET", "POST"])
+def index():
+    if request.method == "POST":
+        # Kiểm tra xem người dùng đã chọn file video hay chưa
+        if 'video' not in request.files:
+            return render_template("video.html")
+        
+        video_file = request.files['video']
+        
+        # Kiểm tra xem người dùng đã chọn file hay không
+        if video_file.filename == '':
+            return render_template("video.html")
+        
+        # Lưu video vào thư mục tạm thời hoặc xử lý trực tiếp từ dữ liệu trong bộ nhớ
+        video_path = f"./static/{video_file.filename}"
+        video_file.save(video_path)
+        
+        # Đọc video từ file
+        video = cv2.VideoCapture(video_path)
+        
+        # Kiểm tra xem video đã đọc thành công hay không
+        if not video.isOpened():
+            return render_template("video.html")
+        
+        # Trả về response chứa video stream
+        return Response(detect_objects(video),
+                        mimetype='multipart/x-mixed-replace; boundary=frame')
+    
+    return render_template("video.html")
+
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
