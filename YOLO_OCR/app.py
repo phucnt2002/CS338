@@ -59,7 +59,7 @@ def image():
         if not file:
             return
         img_bytes = file.read()
-        img = cv2.imread("./test/"+file.filename)
+        img = cv2.imread("./YOLO_OCR/test/"+file.filename)
         if img is None:
             print("Failed to read the image:", file.filename)
             return
