@@ -18,7 +18,7 @@ def load_yolov5_model():
     :return: model, names
     """
     print(os.getcwd())
-    model_file = "./YOLO_OCR/model/best1.pt"
+    model_file = os.path.join(os.getcwd(), 'model', 'best1.pt')
     model = attempt_load(model_file, map_location=params.device)
     print("device", params.device)
     stride = int(model.stride.max())  # model stride

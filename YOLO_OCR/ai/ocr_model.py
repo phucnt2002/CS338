@@ -31,8 +31,9 @@ def easyocr_model_works(text_reader, images, visualization=False):
     """
 
     texts = list()
+    print(len(images))
     for i in range(len(images)):
-        results = text_reader.recognize(
+        results = text_reader.readtext(
             images[i]
         )  # reader.recognize sadece recognize, text detection yok
         for (bbox, text, prob) in results:

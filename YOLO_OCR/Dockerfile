@@ -1,6 +1,7 @@
 # Use the official Python base image
-FROM python:3.9
+FROM python:3.11.3
 
+RUN apt-get update && apt-get install -y libgl1-mesa-glx
 # Set the working directory inside the container
 WORKDIR /app
 

@@ -1,12 +1,14 @@
 import argparse
 import io
 import os
+import time
 from PIL import Image
 import cv2
 import numpy as np
 from torchvision.models import detection
 from ai.ai_model import load_yolov5_model
 from helper.general_utils import filter_text
+from helper.general_utils import save_results
 
 import torch
 from torchvision import models
@@ -65,18 +67,24 @@ def image():
             return
         print(file)
         # img = Image.open(io.BytesIO(img_bytes))
-        frame_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        # frame_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        start_time = time.time()
         text_reader = easyocr_model_load()
         # Detecting the text from the image.
-        detected, _, detected_plate = detection(frame_rgb, model, labels)
+        detected, _, detected_plate = detection(img, model, labels)
         # Reading the text from the image.
         resulteasyocr = text_reader.readtext(
             detected
         ) 
+        text = filter_text(params.rect_size, resulteasyocr, params.region_threshold)
+        print(text)
+        end_time = time.time()
+        execution_time = end_time - start_time
         
         print(detected_plate)
+        print("Thời gian chạy:", execution_time, "giây")
+
         
-        text = filter_text(params.rect_size, resulteasyocr, params.region_threshold)
         # cv2.imshow("detected", detected)
         # cv2.imshow("detected_plate", detected_plate)
         
@@ -96,6 +104,15 @@ def detect_objects(video):
 
             # Hiển thị frame với các bounding box và nhãn
             cv2.imshow("Object Detection", detected_frame)
+
+            # resulteasyocr = text_reader.readtext(
+            #     detected_frame
+            # ) 
+            # text_reader = easyocr_model_load()
+            # text = filter_text(params.rect_size, resulteasyocr, params.region_threshold)
+            # print(text)
+            # save_results(text[-1], "ocr_results.csv", "Detection_Images")
+            
 
             # Chuyển đổi frame thành dạng byte để trả về
             frame_bytes = cv2.imencode('.jpg', detected_frame)[1].tobytes()
